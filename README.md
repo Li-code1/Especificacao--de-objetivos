@@ -1,1 +1,1 @@
-# Especifica-o-de-objetivos
+# Especificação de objetivos
