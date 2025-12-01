@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Especificação de Objetivos (PNL/Coaching)</title>
+  <style>
+    /* Estilos baseados no projeto Roda da Vida */
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --accent: #a78bfa; /* Principal: Roxo */
+      --accent-2: #22d3ee; /* Secundário: Ciano */
+      --ring: #334155;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px circle at 80% -20%, #1f2937 0%, var(--bg) 35%, #0b1226 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 32px 20px 12px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+      letter-spacing: 0.2px;
+    }
+    header p { margin: 0; color: var(--muted); }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto 60px;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      padding: 20px 30px;
+    }
+
+    .section-field {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
+    .section-field:last-child { border-bottom: none; }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.4rem;
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+    .question-hint { color: var(--muted); margin: 0 0 12px; font-size: 0.95rem; }
+
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+    }
+    textarea { min-height: 100px; }
+    input::placeholder { color: #9aa4b1; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr; 
+      gap: 16px;
+      margin-top: 10px;
+    }
+    /* Ajuste o grid para 1 coluna em telas menores */
+    @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } } 
+    /* Ajuste o grid para 2 colunas em telas médias */
+    @media (min-width: 601px) and (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    button {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #sendEmailBtn {
+      background: linear-gradient(180deg, rgba(34,211,238,0.15), rgba(34,211,238,0.08)); /* Ciano */
+    }
+    #downloadPdfBtn {
+      background: linear-gradient(180deg, rgba(167,139,250,0.15), rgba(167,139,250,0.08)); /* Roxo */
+    }
+    #resetBtn {
+      background: transparent;
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+    
+    /* ESTILOS DA ÁREA DE PREVIEW (VERSÃO ESCURA VISUAL) */
+    .preview-section {
+        background: var(--card);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+        color: var(--text);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .preview-section h2 { margin-bottom: 20px; }
+    .preview-data p { margin: 8px 0; border-bottom: 1px dotted rgba(255,255,255,0.1); padding-bottom: 4px; }
+    .preview-data strong { color: var(--accent); margin-right: 8px; }
+    .preview-data .long-answer { 
+        margin-top: 5px; 
+        padding: 10px; 
+        background: rgba(255,255,255,0.05); 
+        border-radius: 6px; 
+        white-space: pre-wrap; 
+    }
+    
+    /* NOVO: ESTILOS TEMPORÁRIOS PARA GARANTIR LEITURA NO PDF BRANCO */
+    /* Este CSS será aplicado via JavaScript apenas durante a captura do PDF */
+    .pdf-ready {
+        background: #ffffff !important; /* Fundo branco */
+        color: #333333 !important; /* Texto escuro */
+        border: 1px solid #cccccc !important;
+        box-shadow: none !important;
+    }
+    .pdf-ready h2 { color: #0088aa !important; } /* Títulos em cor escura */
+    .pdf-ready strong { color: #800080 !important; } /* Destaques em cor escura */
+    .pdf-ready .long-answer { 
+        background: #f0f0f0 !important; /* Fundo cinza claro para blocos de texto */
+        border: 1px solid #dddddd !important;
+    }
+
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@2.12.0/dist/dom-to-image-more.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+<body>
+  <header>
+    <h1>Especificação de Objetivos (PNL/Coaching)</h1>
+    <p>Use esta ferramenta para definir seu objetivo de forma ecológica, clara e motivadora.</p>
+  </header>
+
+  <main class="container">
+    <div class="card" id="formCard">
+      <form id="objectiveForm">
+        
+        <div class="section-field">
+          <h2>Informações Básicas</h2>
+          <div class="grid">
+            <div>
+              <label for="nome">Nome</label>
+              <input id="nome" name="nome" type="text" placeholder="Seu nome completo" required />
+            </div>
+            <div>
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" placeholder="seuemail@exemplo.com" required />
+            </div>
+            <div>
+              <label for="celular">Celular</label>
+              <input id="celular" name="celular" type="tel" placeholder="(11) 98765-4321" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-field">
+          <h2>1. Objetivo Específico e Positivo</h2>
+          <p class="question-hint">O que exatamente você quer alcançar? O objetivo deve ser expresso no positivo e ser específico.</p>
+          <label for="objetivo">O que você quer (e não o que não quer)?</label>
+          <textarea id="objetivo" name="objetivo" placeholder="Ex: Eu quero ter uma renda mensal de R$X.XXX,XX até o dia 31/12/20XX."></textarea>
+        </div>
+
+        <div class="section-field">
+          <h2>2. Evidências e Prazo</h2>
+          <p class="question-hint">Como você saberá que alcançou o objetivo? O que verá, ouvirá e sentirá?</p>
+          <label for="evidencia">Quais as evidências concretas de que o objetivo foi alcançado?</label>
+          <textarea id="evidencia" name="evidencia" placeholder="Ex: Vou ver o saldo bancário, vou ouvir elogios do meu cliente, vou sentir confiança."></textarea>
+
+          <div class="grid" style="margin-top: 20px; grid-template-columns: 1fr;">
+             <div>
+                <label for="prazo">Data Limite (Prazo)</label>
+                <input id="prazo" name="prazo" type="text" placeholder="Ex: 31/12/2026" />
+             </div>
+          </div>
+        </div>
+
+        <div class="section-field">
+          <h2>3. Recursos e Ecologia</h2>
+          <p class="question-hint">Você tem o que é necessário? E quais são as consequências de alcançar o objetivo?</p>
+          <label for="recursos">Quais recursos (habilidades, pessoas, dinheiro, tempo) você já tem ou precisa para alcançá-lo?</label>
+          <textarea id="recursos" name="recursos" placeholder="Ex: Tenho conhecimento em X, preciso de R$Y para investir em Z."></textarea>
+          
+          <div style="margin-top: 20px;">
+            <label for="ecologia">Quais os impactos de alcançar o objetivo na sua vida e nas pessoas ao seu redor? Há algo a perder?</label>
+            <textarea id="ecologia" name="ecologia" placeholder="Ex: Ganharei mais tempo livre, mas terei que abrir mão de algumas noites de lazer nos próximos 3 meses."></textarea>
+          </div>
+        </div>
+
+        <div class="section-field">
+          <h2>4. Primeiro Passo</h2>
+          <p class="question-hint">Qual a primeira ação que você pode tomar **agora**?</p>
+          <label for="passo">Qual é a primeira, pequena e específica ação para começar?</label>
+          <textarea id="passo" name="passo" placeholder="Ex: Fazer uma lista de 5 clientes em potencial e enviar um e-mail."></textarea>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="sendEmailBtn">Enviar por e-mail</button>
+          <button type="button" id="downloadPdfBtn">Baixar em PDF</button>
+          <button type="button" id="resetBtn">Limpar formulário</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="previewForPdf" class="card preview-section" style="display: none;">
+      <h2>Resumo do Objetivo</h2>
+      <div class="preview-data">
+        <p><strong>Nome:</strong> <span data-field="nome"></span></p>
+        <p><strong>E-mail:</strong> <span data-field="email"></span></p>
+        <p><strong>Celular:</strong> <span data-field="celular"></span></p>
+        <p><strong>Objetivo Principal:</strong> <span data-field="objetivo" class="long-answer"></span></p>
+        <p><strong>Prazo:</strong> <span data-field="prazo"></span></p>
+        <p><strong>Evidências de Alcance:</strong> <span data-field="evidencia" class="long-answer"></span></p>
+        <p><strong>Recursos Necessários:</strong> <span data-field="recursos" class="long-answer"></span></p>
+        <p><strong>Ecologia/Impactos:</strong> <span data-field="ecologia" class="long-answer"></span></p>
+        <p><strong>Primeira Ação:</strong> <span data-field="passo" class="long-answer"></span></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Endereço de e-mail do destinatário
+    const TARGET_EMAIL = 'lilianelimapsicanalista@gmail.com';
+
+    // Mapeamento dos campos para o estado
+    const FIELDS = ['nome', 'email', 'celular', 'objetivo', 'evidencia', 'prazo', 'recursos', 'ecologia', 'passo'];
+
+    // Estado para armazenar os dados do formulário
+    const state = Object.fromEntries(FIELDS.map(f => [f, '']));
+
+    // Variáveis que serão preenchidas após o DOM carregar
+    let formEl, sendEmailBtn, downloadPdfBtn, resetBtn, previewForPdfEl;
+
+
+    // --- FUNÇÕES DE UTILIDADE ---
+
+    function updateState() {
+        FIELDS.forEach(field => {
+            const el = document.getElementById(field);
+            if (el) {
+                state[field] = el.value.trim();
+            }
+        });
+        updatePreview();
+    }
+
+    function updatePreview() {
+        // Atualiza a DIV que será usada para gerar o PDF/E-mail
+        FIELDS.forEach(field => {
+            const span = previewForPdfEl.querySelector(`[data-field="${field}"]`);
+            if (span) {
+                // Conteúdo é copiado para a SPAN
+                span.textContent = state[field] || '[Não preenchido]';
+            }
+        });
+    }
+
+    // --- INICIALIZAÇÃO E LISTENERS (Executada após o DOM carregar) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Atribuição dos elementos
+        formEl = document.getElementById('objectiveForm');
+        sendEmailBtn = document.getElementById('sendEmailBtn');
+        downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        resetBtn = document.getElementById('resetBtn');
+        previewForPdfEl = document.getElementById('previewForPdf');
+        
+        // 2. Event Listeners 
+        formEl.addEventListener('input', updateState);
+
+        resetBtn.addEventListener('click', () => {
+            formEl.reset();
+            updateState();
+            alert('O formulário foi limpo.');
+        });
+
+        sendEmailBtn.addEventListener('click', () => {
+            updateState();
+
+            if (!state.nome || !state.email || !state.objetivo) {
+                alert('Por favor, preencha seu Nome, E-mail e o campo "O que você quer".');
+                return;
+            }
+            // Lógica de envio de e-mail (mailto)
+            const subject = encodeURIComponent(`Especificação de Objetivo de Coaching - ${state.nome}`);
+            const bodyLines = [];
+            bodyLines.push(`Nome: ${state.nome}`);
+            bodyLines.push(`E-mail: ${state.email}`);
+            if (state.celular) { bodyLines.push(`Celular: ${state.celular}`); }
+            bodyLines.push('');
+            bodyLines.push('--- Resumo do Objetivo ---');
+            
+            const dataMap = {
+                'O que você quer (Positivo e Específico)': state.objetivo,
+                'Prazo': state.prazo,
+                'Evidências de Alcance': state.evidencia,
+                'Recursos Necessários': state.recursos,
+                'Ecologia/Impactos': state.ecologia,
+                'Primeira Ação': state.passo
+            };
+
+            for (const [key, value] of Object.entries(dataMap)) {
+                bodyLines.push(`\n[${key.toUpperCase()}]:`);
+                bodyLines.push(value || 'N/A');
+            }
+
+            const body = encodeURIComponent(bodyLines.join('\n'));
+            const mailto = `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+            window.location.href = mailto;
+        });
+
+        // Botão Baixar em PDF (COM SOLUÇÃO DE VISIBILIDADE)
+        downloadPdfBtn.addEventListener('click', async () => {
+            updateState(); 
+            
+            if (!state.nome || !state.objetivo) {
+                alert('Por favor, preencha seu Nome e o campo "O que você quer" antes de baixar o PDF.');
+                return;
+            }
+
+            const nomeArquivo = `Objetivo_${(state.nome || 'cliente').replace(/\s+/g,'_')}.pdf`;
+            const doc = new window.jspdf.jsPDF();
+            
+            // 1. Prepara e mostra a área de preview
+            previewForPdfEl.style.display = 'block';
+            previewForPdfEl.style.width = '100%'; 
+
+            // ** NOVO PASSO CRÍTICO: Aplica estilos claros para o PDF **
+            previewForPdfEl.classList.add('pdf-ready');
+
+            // Garante que o navegador renderize o texto preenchido (pequeno atraso para estabilidade)
+            await new Promise(resolve => setTimeout(resolve, 50)); 
+            
+            try {
+                // 2. Captura a imagem da área de preview (HTML to PNG)
+                const dataUrl = await domtoimage.toPng(previewForPdfEl, {
+                    quality: 0.98,
+                    bgcolor: '#ffffff' 
+                });
+
+                // 3. Remove estilos e oculta
+                previewForPdfEl.classList.remove('pdf-ready');
+                previewForPdfEl.style.display = 'none';
+
+                // 4. Configura o PDF
+                const img = new Image();
+                img.src = dataUrl;
+                await new Promise(resolve => img.onload = resolve);
+                
+                const pdfWidth = doc.internal.pageSize.getWidth();
+                const pdfHeight = doc.internal.pageSize.getHeight();
+                
+                const margin = 10;
+                const contentWidth = pdfWidth - 2 * margin;
+                const imgHeight = (img.height * contentWidth) / img.width;
+
+                // 5. Adiciona a imagem ao PDF
+                let currentY = margin;
+                doc.setFontSize(16);
+                doc.setTextColor('#333333');
+                doc.text('Especificação de Objetivos (PNL/Coaching)', margin, currentY + 5);
+                currentY += 15;
+
+                let imgX = margin;
+                let imgY = currentY;
+
+                if (imgHeight < pdfHeight - currentY) {
+                    doc.addImage(dataUrl, 'PNG', imgX, imgY, contentWidth, imgHeight);
+                } else {
+                    let remainingHeight = imgHeight;
+                    let pageNumber = 1;
+                    while (remainingHeight > 0) {
+                        if (pageNumber > 1) {
+                            doc.addPage();
+                            imgY = margin;
+                        }
+                        
+                        const imgRatio = img.width / contentWidth;
+                        const cropY = (imgHeight - remainingHeight) * imgRatio;
+
+                        doc.addImage(dataUrl, 'PNG', imgX, imgY, contentWidth, imgHeight, undefined, undefined, 'center', 'top', 0, cropY);
+                        
+                        remainingHeight -= (pdfHeight - imgY - margin);
+                        pageNumber++;
+                    }
+                }
+                
+                // 6. Salva o PDF
+                doc.save(nomeArquivo);
+
+            } catch (error) {
+                console.error('Erro ao gerar PDF:', error);
+                alert('Não foi possível gerar o PDF. Verifique se preencheu o formulário e tente novamente.');
+                previewForPdfEl.classList.remove('pdf-ready');
+                previewForPdfEl.style.display = 'none';
+            }
+        });
+
+        // Chamada inicial para configurar o preview
+        updateState(); 
+    });
+  </script>
+</body>
+</html>
